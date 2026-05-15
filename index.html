@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Muriel Meals">
+<meta name="theme-color" content="#1C2B1C">
+<title>Muriel Family Meals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1C2B1C;--cream:#F5F0E8;--sage:#6B9E6B;--rust:#C4622D;
+  --mist:#E8EFE8;--gold:#B8860B;--white:#FFFDF9;
+  --sh:0 2px 16px rgba(28,43,28,.07);--sh2:0 6px 28px rgba(28,43,28,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--ink);
+  min-height:100dvh;padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);overscroll-behavior:none}
+/* HEADER */
+.hdr{background:var(--ink);padding:2rem 1.5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(107,158,107,.18),transparent);
+  pointer-events:none}
+.hdr h1{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,6vw,2.8rem);
+  color:var(--cream);letter-spacing:.01em;position:relative}
+.hdr h1 em{color:#A8C878;font-style:italic}
+.hdr p{color:rgba(245,240,232,.45);font-size:.72rem;letter-spacing:.14em;
+  text-transform:uppercase;margin-top:.4rem;position:relative}
+/* TABS */
+.tabs{display:flex;background:var(--ink);border-top:1px solid rgba(255,255,255,.06);
+  overflow-x:auto;position:sticky;top:0;z-index:99;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:72px;padding:.75rem .4rem;text-align:center;border:none;
+  background:none;font-family:'Lato',sans-serif;font-size:.62rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.4);
+  cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:#A8C878;border-bottom-color:#A8C878}
+.tab:hover{color:var(--cream)}
+/* MAIN */
+.pg{display:none;max-width:860px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+.pg.on{display:block}
+/* TYPOGRAPHY */
+.ptitle{font-family:'Playfair Display',serif;font-size:1.55rem;margin-bottom:.2rem}
+.ptitle span{color:var(--rust);font-style:italic}
+.psub{font-size:.7rem;color:rgba(28,43,28,.4);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:1.75rem;padding-bottom:.75rem;border-bottom:1px solid rgba(28,43,28,.06)}
+/* CARDS */
+.card{background:var(--white);border-radius:14px;box-shadow:var(--sh);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card:hover{box-shadow:var(--sh2)}
+/* FORMULA BAR */
+.fml{background:rgba(107,158,107,.1);border-radius:8px;padding:.5rem .9rem;
+  font-size:.73rem;font-weight:700;color:var(--sage);letter-spacing:.06em;margin-bottom:1rem}
+/* BADGES */
+.bp{background:rgba(196,98,45,.12);color:#7A2800;font-size:.55rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:.1rem .3rem;border-radius:3px;
+  display:inline-block;margin-left:.2rem;vertical-align:middle}
+.bc{background:rgba(107,158,107,.15);color:#2A5020;font-size:.55rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:.1rem .3rem;border-radius:3px;
+  display:inline-block;margin-left:.2rem;vertical-align:middle}
+.bf{background:rgba(184,134,11,.12);color:#6B4A00;font-size:.55rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:.1rem .3rem;border-radius:3px;
+  display:inline-block;margin-left:.2rem;vertical-align:middle}
+.bv{background:rgba(28,43,28,.08);color:#1C2B1C;font-size:.55rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:.1rem .3rem;border-radius:3px;
+  display:inline-block;margin-left:.2rem;vertical-align:middle}
+.tg{font-size:.58rem;font-weight:700;padding:.12rem .35rem;border-radius:100px;
+  display:inline-block;margin-left:.35rem;vertical-align:middle}
+.tg-g{background:rgba(107,158,107,.15);color:#2A6020}
+.tg-y{background:rgba(184,134,11,.15);color:#6B4A00}
+/* MEAL BLOCKS */
+.mb{margin-bottom:2.25rem}
+.mh{display:flex;align-items:center;gap:.85rem;margin-bottom:.5rem}
+.mn{width:34px;height:34px;background:var(--ink);color:#A8C878;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;flex-shrink:0}
+.mt{font-family:'Playfair Display',serif;font-size:1.15rem}
+.ms{font-size:.68rem;color:var(--sage);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+/* OPTION CARDS */
+.og{display:grid;gap:.6rem}
+.oc{background:var(--white);border-radius:12px;padding:1.1rem 1.35rem;box-shadow:var(--sh);transition:all .2s}
+.oc:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.ol{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);margin-bottom:.25rem}
+.on{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:.6rem}
+.oi{display:flex;flex-direction:column;gap:.28rem}
+.oitem{display:flex;align-items:flex-start;gap:.45rem;font-size:.8rem;line-height:1.5;color:rgba(28,43,28,.75)}
+.otip{margin-top:.55rem;font-size:.7rem;color:var(--sage);font-style:italic;line-height:1.5}
+/* DINNER CARDS */
+.dc{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--sh);margin-bottom:.85rem}
+.dc.td{box-shadow:0 0 0 2px var(--sage),var(--sh)}
+.dh{padding:.8rem 1.2rem;background:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.dd{font-family:'Playfair Display',serif;color:var(--cream);font-size:.95rem}
+.dtg{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.18rem .45rem;border-radius:100px}
+.dtg-sc{background:rgba(107,158,107,.2);color:#7ACC7A}
+.dtg-lf{background:rgba(184,134,11,.2);color:#D4A020}
+.dtg-ch{background:rgba(196,98,45,.2);color:#E8885A}
+.dtg-ot{background:rgba(150,150,200,.2);color:#9090D0}
+.db{padding:1.1rem 1.2rem}
+.dn{font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic;margin-bottom:.85rem}
+.di{display:flex;flex-direction:column;gap:.3rem}
+.ditem{display:flex;align-items:flex-start;gap:.45rem;font-size:.8rem;line-height:1.5;color:rgba(28,43,28,.75)}
+.dtips{margin-top:.75rem;padding-top:.65rem;border-top:1px solid rgba(28,43,28,.06);display:flex;flex-direction:column;gap:.22rem}
+.dtip2{font-size:.7rem;color:var(--sage);font-style:italic}
+.dflag{font-size:.7rem;color:var(--gold);font-style:italic}
+/* WEEK TABS */
+.wt{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.wtb{padding:.45rem 1.1rem;border:none;border-radius:100px;font-size:.68rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:var(--white);
+  color:rgba(28,43,28,.45);box-shadow:var(--sh);transition:all .2s}
+.wtb.active{background:var(--ink);color:#A8C878}
+/* PLANNER */
+.pi{background:var(--white);border-radius:12px;box-shadow:var(--sh);padding:1.25rem;
+  margin-bottom:1.5rem;font-size:.82rem;line-height:1.7;color:rgba(28,43,28,.7)}
+.fr{display:flex;align-items:center;gap:.85rem;background:var(--white);border-radius:10px;
+  padding:.75rem 1.1rem;box-shadow:var(--sh);margin-bottom:1.5rem}
+.fl{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(28,43,28,.45);white-space:nowrap}
+.fi{flex:1;padding:.38rem .65rem;border:1.5px solid rgba(28,43,28,.1);border-radius:8px;
+  font-family:'Lato',sans-serif;font-size:.82rem;background:var(--white);color:var(--ink)}
+.fi:focus{outline:none;border-color:var(--sage)}
+.ws{display:flex;align-items:center;gap:.85rem;margin-bottom:1.5rem}
+.ws label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(28,43,28,.45)}
+select,.dms{padding:.45rem .7rem;border:1.5px solid rgba(28,43,28,.1);border-radius:9px;
+  font-family:'Lato',sans-serif;font-size:.8rem;background:var(--white);color:var(--ink);cursor:pointer}
+select:focus,.dms:focus{outline:none;border-color:var(--sage)}
+.dpc{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--sh);margin-bottom:.75rem}
+.dph{padding:.75rem 1.2rem;background:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.dpn{font-family:'Playfair Display',serif;color:var(--cream);font-size:.95rem}
+.pbb{height:4px;background:rgba(28,43,28,.07);border-radius:100px;overflow:hidden;margin:.3rem 1.2rem .4rem}
+.pbf{height:100%;width:0;border-radius:100px;transition:width .3s}
+.dpb{padding:1.1rem 1.2rem;display:grid;gap:.65rem}
+.dmr{display:grid;grid-template-columns:68px 1fr;gap:.75rem;align-items:start}
+.dml{font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:rgba(28,43,28,.38);line-height:1.4;padding-top:.1rem}
+.dms{width:100%}
+.dmf{font-size:.8rem;color:rgba(28,43,28,.55);padding:.45rem 0;font-style:italic}
+.dmo{font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:#8EBC8E;font-style:italic;line-height:1.4}
+.nest{margin-top:.35rem;display:flex;flex-wrap:wrap;gap:.3rem}
+.nb{padding:.18rem .5rem;border:1.5px solid rgba(28,43,28,.1);border-radius:100px;
+  font-size:.65rem;cursor:pointer;background:var(--white);color:rgba(28,43,28,.55);transition:all .15s}
+.nb:hover{border-color:var(--sage)}
+.nb.on2{background:var(--ink);border-color:var(--ink);color:#A8C878}
+/* PROTEIN */
+.pb{font-size:.75rem}
+.psum{background:var(--white);border-radius:12px;padding:1.1rem 1.35rem;
+  margin-bottom:1.25rem;box-shadow:var(--sh)}
+.psut{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(28,43,28,.38);margin-bottom:.65rem}
+/* BUTTONS */
+.abts{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:.85rem}
+.btn1{padding:.9rem;background:var(--ink);color:#A8C878;border:none;border-radius:11px;
+  font-family:'Lato',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn1:hover{background:#0E1A0E}
+.btn2{padding:.9rem;background:var(--white);color:var(--ink);border:none;border-radius:11px;
+  font-family:'Lato',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;box-shadow:var(--sh);transition:box-shadow .2s}
+.btn2:hover{box-shadow:var(--sh2)}
+/* CALENDAR */
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem}
+.ch{text-align:center;font-size:.58rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(28,43,28,.35);padding:.4rem 0}
+.cd{background:var(--white);border-radius:10px;box-shadow:var(--sh);padding:.6rem .4rem;min-height:130px}
+.cdn{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:.3rem}
+.cm{padding:.15rem .28rem;border-radius:4px;margin-bottom:.18rem;line-height:1.3;font-size:.56rem}
+.cm1{background:rgba(196,98,45,.1);color:#7A2800}
+.cm2{background:rgba(107,158,107,.1);color:#2A5020}
+.cm3{background:rgba(107,158,107,.13);color:#2A5020}
+.cm4{background:rgba(184,134,11,.1);color:#6B4A00}
+.cm5{background:rgba(28,43,28,.06);color:var(--ink);font-weight:700}
+.cm6{background:rgba(107,158,107,.08);color:#2A5020;font-size:.52rem}
+.cprot{font-size:.56rem;font-weight:700;margin-bottom:.2rem}
+.cempty{font-size:.56rem;color:rgba(28,43,28,.25);font-style:italic}
+/* GROCERY */
+.gcat{margin-bottom:1.5rem}
+.gct{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:.65rem;
+  display:flex;align-items:center;gap:.5rem}
+.gct::after{content:'';flex:1;height:1px;background:rgba(28,43,28,.07)}
+.gi{display:flex;align-items:center;gap:.65rem;padding:.6rem .9rem;background:var(--white);
+  border-radius:9px;box-shadow:var(--sh);font-size:.8rem;cursor:pointer;transition:all .15s;
+  margin-bottom:.35rem}
+.gi:hover{transform:translateX(2px)}
+.gi.chk{opacity:.4;text-decoration:line-through}
+.gcb{width:17px;height:17px;border:1.5px solid rgba(28,43,28,.2);border-radius:4px;
+  flex-shrink:0;transition:all .15s}
+.gi.chk .gcb{background:var(--sage);border-color:var(--sage)}
+.gi.chk .gcb::after{content:'\2713';display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;color:white;line-height:17px;padding-left:2px}
+.gempty{text-align:center;padding:2.5rem;color:rgba(28,43,28,.3);font-style:italic}
+/* RECIPES */
+.rs{position:relative;margin-bottom:1.25rem}
+.ri{width:100%;padding:.8rem .9rem .8rem 2.5rem;border:none;border-radius:12px;
+  font-family:'Lato',sans-serif;font-size:.88rem;background:var(--white);
+  color:var(--ink);box-shadow:var(--sh)}
+.ri:focus{outline:none;box-shadow:0 0 0 2px var(--sage)}
+.si{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);
+  color:rgba(28,43,28,.3);font-size:.9rem}
+.rg{display:grid;gap:.85rem}
+.rc{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--sh);transition:all .2s}
+.rc:hover{box-shadow:var(--sh2)}
+.rch{padding:.95rem 1.2rem .75rem;border-bottom:1px solid rgba(28,43,28,.05);
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.rcn{font-family:'Playfair Display',serif;font-size:1rem}
+.rcm{font-size:.67rem;color:rgba(28,43,28,.38);margin-top:.15rem}
+.rct{display:flex;gap:.3rem;flex-wrap:wrap}
+.rctg{font-size:.57rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:.12rem .35rem;border-radius:100px;background:rgba(28,43,28,.06);color:rgba(28,43,28,.45)}
+.rcb{padding:1.1rem 1.2rem;display:none}
+.rcb.op{display:block}
+.rst{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(28,43,28,.38);margin:0 0 .4rem}
+.rst:not(:first-child){margin-top:.75rem}
+.ring{display:flex;flex-direction:column;gap:.22rem}
+.ritem{font-size:.8rem;color:rgba(28,43,28,.72);display:flex;gap:.45rem}
+.ritem::before{content:'\00b7';color:var(--sage);flex-shrink:0}
+.rsteps{display:flex;flex-direction:column;gap:.45rem}
+.rstep{font-size:.8rem;color:rgba(28,43,28,.72);display:flex;gap:.65rem;line-height:1.5}
+.rsn{min-width:21px;height:21px;background:var(--ink);color:#A8C878;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;
+  flex-shrink:0;margin-top:.1rem}
+/* SWAP */
+.swg{display:grid;gap:.65rem}
+.swc{background:var(--white);border-radius:12px;padding:.95rem 1.2rem;box-shadow:var(--sh);
+  display:flex;align-items:center;justify-content:space-between}
+.swn{font-family:'Playfair Display',serif;font-size:.95rem}
+.swb{font-size:.65rem;color:rgba(28,43,28,.38);margin-top:.15rem}
+/* RULES */
+.rg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.65rem}
+.rule{background:var(--white);border-radius:12px;padding:.95rem 1.1rem;box-shadow:var(--sh);
+  display:flex;align-items:flex-start;gap:.65rem;font-size:.8rem;line-height:1.5;color:rgba(28,43,28,.8)}
+.rck{width:19px;height:19px;background:var(--sage);color:white;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;
+  flex-shrink:0;margin-top:.1rem}
+@media(max-width:560px){
+  .cg{gap:.18rem}.cd{padding:.4rem .22rem;min-height:105px}.cdn{font-size:.85rem}
+  .cm{font-size:.5rem;padding:.12rem .2rem}.abts{grid-template-columns:1fr}
+  .dmr{grid-template-columns:58px 1fr;gap:.6rem}.rg2{grid-template-columns:1fr}
+  .ptitle{font-size:1.35rem}
+}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>Muriel <em>Family</em> Meals</h1>
+  <p>Hybrid Recomposition Plan &middot; Get Thick Foundation &middot; 12-Hour Fat Burning Window</p>
+</div>
+<div class="tabs">
+  <button class="tab active" onclick="go('planner',this)">Planner</button>
+  <button class="tab" onclick="go('meals',this)">Meals</button>
+  <button class="tab" onclick="go('dinners',this)">Dinners</button>
+  <button class="tab" onclick="go('recipes',this)">Recipes</button>
+  <button class="tab" onclick="go('calendar',this)">Calendar</button>
+  <button class="tab" onclick="go('grocery',this)">Grocery</button>
+  <button class="tab" onclick="go('swap',this)">Swap</button>
+  <button class="tab" onclick="go('rules',this)">Rules</button>
+</div>
+
+<!-- PLANNER -->
+<div id="pg-planner" class="pg on">
+<div class="ptitle">Weekly <span>Planner</span></div>
+<div class="psub">Select your meals each day &middot; Generate calendar and grocery list</div>
+<div class="pi"><strong>How to use:</strong> Choose Week 1-4, type your fruit for the week, then select meals for each day. Dinner (Meal 5) is set automatically by the week rotation. Hit <strong>Generate</strong> to build your calendar and grocery list.</div>
+<div class="ws">
+  <label>Dinner Week:</label>
+  <select id="wksel" onchange="buildPlanner()">
+    <option value="1">Week 1</option><option value="2">Week 2</option>
+    <option value="3">Week 3</option><option value="4">Week 4</option>
+  </select>
+</div>
+<div class="fr">
+  <div class="fl">Fruit this week:</div>
+  <input class="fi" id="fruitIn" type="text" placeholder="e.g. strawberries, bananas" oninput="updateAllProt()">
+</div>
+<div id="dayPlan"></div>
+<div class="psum"><div class="psut">Weekly Protein Summary</div>
+  <div id="psumC" style="font-size:.8rem;color:rgba(28,43,28,.4);font-style:italic">Make selections above to see daily protein totals</div>
+</div>
+<div class="abts">
+  <button class="btn1" onclick="generate()">Generate Calendar &amp; Grocery List</button>
+  <button class="btn2" onclick="clearAll()">Clear All</button>
+</div>
+</div>
+
+<!-- MEALS -->
+<div id="pg-meals" class="pg">
+<div class="ptitle">Daily <span>Meals</span></div>
+<div class="psub">8am&ndash;8pm Eating Window &middot; Water only throughout the day</div>
+
+<div class="mb">
+  <div class="mh"><div class="mn">1</div><div><div class="mt">Breakfast</div><div class="ms">8:00am &middot; Break your fast</div></div></div>
+  <div class="fml">Protein + Complex Carb</div>
+  <div class="og">
+    <div class="oc"><div class="ol">Option A <span class="tg tg-g">Plan Default</span></div>
+      <div class="on">Scrambled Eggs</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95A; 1-2 scrambled eggs with cheese and baby spinach <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F33E; Carb choice: oatmeal &middot; wheat toast &middot; fruit <span class="bc">Complex Carb</span></div>
+      </div>
+      <div class="otip">Add egg whites to boost protein &middot; Cheese and veggies permitted by plan</div>
+    </div>
+    <div class="oc"><div class="ol">Option B <span class="tg tg-g">Plan Approved</span></div>
+      <div class="on">Turkey Sausage</div>
+      <div class="oi">
+        <div class="oitem">&#x1F32D; 2-3 turkey sausage links microwaved <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F33E; Carb choice: oatmeal &middot; wheat toast &middot; fruit <span class="bc">Complex Carb</span></div>
+      </div>
+      <div class="otip">Plan explicitly approves turkey as egg replacement &middot; Compensate with solid 6oz at Meals 3 and 5</div>
+    </div>
+    <div class="oc"><div class="ol">Option C <span class="tg tg-y">Fat Burning Plan</span></div>
+      <div class="on">Yogurt &amp; Granola Bowl</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95B; 1 cup plain Greek yogurt <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F33E; Half cup granola with fresh or frozen berries <span class="bc">Complex Carb</span></div>
+      </div>
+      <div class="otip">Lower protein than eggs &mdash; compensate at Meals 3 and 5</div>
+    </div>
+    <div class="oc"><div class="ol">Option D <span class="tg tg-y">Lighter Option</span></div>
+      <div class="on">Overnight Oats</div>
+      <div class="oi">
+        <div class="oitem">&#x1F33E; Half cup oats soaked overnight in Greek yogurt or Lactaid milk <span class="bc">Complex Carb</span><span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F353; Fresh or frozen berries on top</div>
+      </div>
+      <div class="otip">Prep the night before &middot; Lightest option &mdash; ensure solid 6oz at Meals 3 and 5</div>
+    </div>
+    <div class="oc"><div class="ol">Option E <span class="tg tg-g">Plan Compliant</span></div>
+      <div class="on">Weekend French Toast</div>
+      <div class="oi">
+        <div class="oitem">&#x1F35E; 2 slices whole grain bread <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F95A; 1-2 eggs whisked with cinnamon and vanilla as batter <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F353; Fresh or frozen berries on top instead of syrup</div>
+      </div>
+      <div class="otip">Add egg whites to batter to boost protein &middot; 5 minutes in a skillet</div>
+    </div>
+  </div>
+</div>
+
+<div class="mb">
+  <div class="mh"><div class="mn">2</div><div><div class="mt">Mid-Morning</div><div class="ms">10:30am</div></div></div>
+  <div class="fml">Protein Shake (30g) + Fat</div>
+  <div class="og">
+    <div class="oc" style="border-left:3px solid var(--sage)">
+      <div class="ol" style="color:var(--sage)">Every Day</div>
+      <div class="on">Nutricost Protein Shake + One Pairing</div>
+      <div class="oi">
+        <div class="oitem">&#x1F964; 1 scoop Nutricost Whey Isolate + Lactaid milk &mdash; 30g protein <span class="bp">Protein</span></div>
+      </div>
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(28,43,28,.35);margin:.65rem 0 .35rem">Pair with one:</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95C; 1 tbsp peanut or almond butter OR handful of nuts <span class="bf">Fat</span> <span class="tg tg-g">Plan Default</span></div>
+        <div class="oitem">&#x1F9C0; 1 string cheese <span class="bp">Protein</span><span class="bf">Fat</span> <span class="tg tg-y">Personal mod</span></div>
+        <div class="oitem">&#x1F951; Quarter avocado <span class="bf">Fat</span> <span class="tg tg-y">Personal mod</span></div>
+        <div class="oitem">&#x1F95B; Small Greek yogurt &mdash; only if not used at Meal 1 <span class="bp">Protein</span><span class="bf">Fat</span> <span class="tg tg-y">Personal mod</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb">
+  <div class="mh"><div class="mn">3</div><div><div class="mt">Lunch</div><div class="ms">1:00pm</div></div></div>
+  <div class="fml">6oz Protein + Complex Carb + Vegetable</div>
+  <div class="og">
+    <div class="oc"><div class="ol">Option A <span class="tg tg-g">Fully Compliant</span></div>
+      <div class="on">Taco Salad</div>
+      <div class="oi">
+        <div class="oitem">&#x1F357; 6oz chicken strips with taco seasoning <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F33D; Half cup corn <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Romaine, canned diced tomatoes, salsa <span class="bv">Vegetable</span></div>
+        <div class="oitem">&#x1F95B; Greek yogurt dollop instead of sour cream <span class="bf">Fat</span></div>
+      </div>
+      <div class="otip">Cook chicken in skillet with taco seasoning, assemble over lettuce</div>
+    </div>
+    <div class="oc"><div class="ol">Option B <span class="tg tg-g">Fully Compliant</span></div>
+      <div class="on">Classic Grilled Chicken Salad</div>
+      <div class="oi">
+        <div class="oitem">&#x1F357; Frozen grilled chicken strips microwaved <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F34E; Fruit: _______ <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Mixed greens, canned diced tomatoes, cucumber, dressing <span class="bv">Vegetable</span></div>
+        <div class="oitem">&#x1F95A; 1 pre-boiled egg <span class="bp">Protein</span><span class="bf">Fat</span></div>
+      </div>
+      <div class="otip">Zero cooking required &mdash; quickest lunch option</div>
+    </div>
+    <div class="oc"><div class="ol">Option C <span class="tg tg-g">Fully Compliant</span></div>
+      <div class="on">Whole Grain Sandwich</div>
+      <div class="oi">
+        <div class="oitem">&#x1F357; 6oz deli turkey, deli chicken, or tuna <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F35E; 2 slices whole grain bread <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Baby spinach, canned diced tomatoes, cucumber, mustard or mayo <span class="bv">Vegetable</span><span class="bf">Fat</span></div>
+      </div>
+      <div class="otip">Toast the bread &middot; Season with garlic powder and Italian seasoning</div>
+    </div>
+    <div class="oc"><div class="ol">Option D <span class="tg tg-g">Fully Compliant</span></div>
+      <div class="on">Whole Grain Wrap</div>
+      <div class="oi">
+        <div class="oitem">&#x1F32F; Whole grain wrap <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F357; 6oz deli turkey, deli chicken, or tuna <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F957; Baby spinach, canned diced tomatoes, cucumber, mustard or mayo <span class="bv">Vegetable</span><span class="bf">Fat</span></div>
+      </div>
+      <div class="otip">Same as sandwich but portable &middot; No cooking required</div>
+    </div>
+    <div class="oc"><div class="ol">Option E <span class="tg tg-y">Occasional Use</span></div>
+      <div class="on">Vital Pursuit Bowl</div>
+      <div class="oi">
+        <div class="oitem">&#x2744; Vital Pursuit Chicken &amp; Spinach Garlic Alfredo &mdash; 31g protein, 12g fiber <span class="bp">Protein</span></div>
+        <div class="oitem">&#x1F35D; Pasta and spinach included in bowl <span class="bc">Complex Carb</span><span class="bv">Vegetable</span></div>
+      </div>
+      <div class="otip">Microwave 4.5 min &middot; Available at Walmart &middot; Not for everyday use</div>
+    </div>
+    <div class="oc"><div class="ol">Option F <span class="tg tg-g">Fully Compliant</span></div>
+      <div class="on">Quesadilla</div>
+      <div class="oi">
+        <div class="oitem">&#x1F32F; Whole grain tortilla <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F357; 6oz shredded chicken or turkey with cheese <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F345; Salsa on the side <span class="bv">Vegetable</span></div>
+      </div>
+      <div class="otip">Skillet, 5 minutes &middot; Add Greek yogurt on the side</div>
+    </div>
+    <div class="oc"><div class="ol">Option G <span class="tg tg-g">Batch Prep</span></div>
+      <div class="on">Egg Salad</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95A; Hard boiled eggs with mayo and mustard <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F35E; Whole grain bread or wrap <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Lettuce or cucumber on the side <span class="bv">Vegetable</span></div>
+      </div>
+      <div class="otip">Make Sunday &mdash; eat Mon through Wed &middot; Buy pre-boiled eggs from Walmart</div>
+    </div>
+    <div class="oc"><div class="ol">Option H <span class="tg tg-g">Batch Prep</span></div>
+      <div class="on">Tuna Salad</div>
+      <div class="oi">
+        <div class="oitem">&#x1F41F; Canned tuna with mayo, mustard, celery, and lemon <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F35E; Whole grain bread or wrap <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Lettuce or cucumber on the side <span class="bv">Vegetable</span></div>
+      </div>
+      <div class="otip">Make Sunday &mdash; eat Mon through Wed &middot; Most economical high protein lunch</div>
+    </div>
+    <div class="oc"><div class="ol">Option I <span class="tg tg-g">Batch Prep</span></div>
+      <div class="on">Chicken Salad</div>
+      <div class="oi">
+        <div class="oitem">&#x1F357; Shredded rotisserie chicken with mayo, celery, and seasonings <span class="bp">Protein</span><span class="bf">Fat</span></div>
+        <div class="oitem">&#x1F35E; Whole grain bread or wrap <span class="bc">Complex Carb</span></div>
+        <div class="oitem">&#x1F957; Lettuce or cucumber on the side <span class="bv">Vegetable</span></div>
+      </div>
+      <div class="otip">Make Sunday using Walmart rotisserie chicken &middot; Makes 4-5 servings</div>
+    </div>
+  </div>
+</div>
+
+<div class="mb">
+  <div class="mh"><div class="mn">4</div><div><div class="mt">Afternoon Snack</div><div class="ms">4:00pm &middot; Food only</div></div></div>
+  <div class="fml">Fat + optional Protein</div>
+  <div class="og">
+    <div class="oc" style="border-left:3px solid var(--sage)">
+      <div class="ol" style="color:var(--sage)">Pick One</div>
+      <div class="on">Afternoon Pairing</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95C; 1 tbsp peanut or almond butter OR handful of nuts <span class="bf">Fat</span> <span class="tg tg-g">Plan Default</span></div>
+        <div class="oitem">&#x1F9C0; 1 string cheese <span class="bp">Protein</span><span class="bf">Fat</span> <span class="tg tg-y">Personal mod</span></div>
+        <div class="oitem">&#x1F951; Quarter avocado <span class="bf">Fat</span> <span class="tg tg-y">Personal mod</span></div>
+        <div class="oitem">&#x1F95B; Small Greek yogurt &mdash; only if not used at Meals 1 or 2 <span class="tg tg-y">Personal mod</span></div>
+      </div>
+      <div class="otip">Water only for the rest of the day &middot; Light bridge to dinner</div>
+    </div>
+  </div>
+</div>
+
+<div class="mb">
+  <div class="mh"><div class="mn">5</div><div><div class="mt">Dinner</div><div class="ms">7:00pm &middot; See Dinners tab</div></div></div>
+  <div class="fml">6oz Protein + Complex Carb + Vegetable</div>
+</div>
+
+<div class="mb">
+  <div class="mh">
+    <div class="mn" style="background:var(--sage);color:white;font-size:.75rem">6</div>
+    <div><div class="mt">Optional Evening Snack</div><div class="ms" style="color:var(--sage)">Before 8:00pm &middot; Only if still hungry</div></div>
+  </div>
+  <div class="fml">Light Protein + Fat &middot; Skip if not hungry</div>
+  <div class="og">
+    <div class="oc" style="box-shadow:0 0 0 1.5px rgba(107,158,107,.3),var(--sh)">
+      <div class="ol" style="color:var(--sage)">Optional</div>
+      <div class="on">Still Hungry? Pick One</div>
+      <div class="oi">
+        <div class="oitem">&#x1F95A; 1-2 hard boiled eggs <span class="bp">Protein</span><span class="bf">Fat</span> <span class="tg tg-g">Plan Approved</span></div>
+        <div class="oitem">&#x1F957; Small salad with light dressing <span class="bv">Vegetable</span> <span class="tg tg-g">Plan Approved</span></div>
+        <div class="oitem">&#x1F95B; Small Greek yogurt &mdash; only if not used earlier <span class="tg tg-y">Personal mod</span></div>
+        <div class="oitem">&#x1F4A7; Glass of water first &mdash; wait 10 minutes &mdash; hunger often passes</div>
+      </div>
+      <div class="otip">Kitchen closes at 8pm &mdash; no exceptions</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- DINNERS -->
+<div id="pg-dinners" class="pg">
+<div class="ptitle">4-Week Dinner <span>Rotation</span></div>
+<div class="psub">Slow cooker Sunday carries to Monday &middot; Wednesday carries to Thursday &middot; Fish is single cook only</div>
+<div class="wt">
+  <button class="wtb active" onclick="showWk(1,this)">Week 1</button>
+  <button class="wtb" onclick="showWk(2,this)">Week 2</button>
+  <button class="wtb" onclick="showWk(3,this)">Week 3</button>
+  <button class="wtb" onclick="showWk(4,this)">Week 4</button>
+</div>
+<div id="dinnerOut"></div>
+</div>
+
+<!-- RECIPES -->
+<div id="pg-recipes" class="pg">
+<div class="ptitle">Recipe <span>Library</span></div>
+<div class="psub">All recipes &middot; Tap to expand &middot; Search by name or ingredient</div>
+<div class="rs">
+  <span class="si">&#x1F50D;</span>
+  <input class="ri" id="rsrch" type="text" placeholder="Search recipes or ingredients..." oninput="filterR(this.value)">
+</div>
+<div class="rg" id="recOut"></div>
+</div>
+
+<!-- CALENDAR -->
+<div id="pg-calendar" class="pg">
+<div class="ptitle">Weekly <span>Calendar</span></div>
+<div class="psub">Generated from your planner selections</div>
+<div id="calOut"><div class="gempty">Complete your Weekly Planner and hit Generate.</div></div>
+</div>
+
+<!-- GROCERY -->
+<div id="pg-grocery" class="pg">
+<div class="ptitle">Grocery <span>List</span></div>
+<div class="psub">Generated from your selections &middot; Tap items to check off</div>
+<div id="grocOut"><div class="gempty">Complete your Weekly Planner and hit Generate.</div></div>
+</div>
+
+<!-- SWAP -->
+<div id="pg-swap" class="pg">
+<div class="ptitle">Swap <span>Library</span></div>
+<div class="psub">Substitute any dinner when you want variety &middot; Replace like for like</div>
+<div class="swg" id="swapOut"></div>
+</div>
+
+<!-- RULES -->
+<div id="pg-rules" class="pg">
+<div class="ptitle">Rules to <span>Remember</span></div>
+<div class="psub">Non-negotiables for your recomposition goal</div>
+<div class="rg2">
+  <div class="rule"><div class="rck">&#x2713;</div>Eating window 8am&ndash;8pm strictly</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Water only throughout the entire day</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Fast 8pm&ndash;8am &mdash; no solid food</div>
+  <div class="rule"><div class="rck">&#x2713;</div>One protein shake at Meal 2 only &mdash; 1 scoop Nutricost Whey Isolate with Lactaid milk &mdash; 30g protein</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Protein shake must be under 6g carbs</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Stop eating when full &mdash; never force feed</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Greek yogurt counts toward one meal only &mdash; don't double up</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Avocado counts as fat only &mdash; don't overuse</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Saturday cheat meal is last meal of the day only</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Sunday resume normal plan</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Hubby adjusts by reducing or skipping his carb portion</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Slow cooker Sunday carries to Monday &mdash; one cook, two days</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Wednesday meals make enough for Thursday</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Fish is single cook night only &mdash; never a two day meal</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Substitute like for like &mdash; protein for protein, carb for carb, vegetable for vegetable</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Daily protein target: 145g</div>
+  <div class="rule"><div class="rck">&#x2713;</div>After 14 days &mdash; Saturday cheat meal is last meal only, not a cheat day</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Keep pre-made blackening seasoning on hand for Week 2 Tuesday</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Whole grain flour tortillas for enchiladas &mdash; Mission brand at Walmart</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Check baked bean label &mdash; keep added sugar moderate</div>
+</div>
+</div>
+
+<script>
+var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var PT=145;
+var M1O={A:'Scrambled Eggs',B:'Turkey Sausage',C:'Yogurt & Granola Bowl',D:'Overnight Oats',E:'Weekend French Toast'};
+var CARBS=['Oatmeal','Wheat Toast','Fruit'];
+var M2P=['Nut Butter / Nuts','String Cheese','Avocado','Greek Yogurt'];
+var M3O={A:'Taco Salad',B:'Classic Grilled Chicken Salad',C:'Whole Grain Sandwich',D:'Whole Grain Wrap',E:'Vital Pursuit Bowl',F:'Quesadilla',G:'Egg Salad',H:'Tuna Salad',I:'Chicken Salad'};
+var SPROTS=['Deli Turkey','Deli Chicken','Tuna'];
+var M4P=['Nut Butter / Nuts','String Cheese','Avocado','Greek Yogurt'];
+var M6O={A:'Hard Boiled Egg(s)',B:'Small Salad',C:'Greek Yogurt'};
+
+var PROT={
+  m1:{A:14,B:16,C:12,D:10,E:14},
+  m2:{'Nut Butter / Nuts':32,'String Cheese':37,'Avocado':30,'Greek Yogurt':42},
+  m3:{A:38,B:50,C:42,D:42,E:31,F:40,G:18,H:28,I:42},
+  m4:{'Nut Butter / Nuts':4,'String Cheese':7,'Avocado':0,'Greek Yogurt':12},
+  m6:{A:8,B:4,C:10},
+  din:{
+    1:{Sunday:46,Monday:46,Tuesday:34,Wednesday:48,Thursday:48,Friday:44,Saturday:0},
+    2:{Sunday:48,Monday:48,Tuesday:34,Wednesday:28,Thursday:28,Friday:44,Saturday:0},
+    3:{Sunday:40,Monday:40,Tuesday:34,Wednesday:53,Thursday:53,Friday:46,Saturday:0},
+    4:{Sunday:53,Monday:53,Tuesday:43,Wednesday:42,Thursday:42,Friday:44,Saturday:0}
+  }
+};
+
+var DIN={
+  1:{
+    Sunday:{n:'French Onion Pot Roast',t:'Slow Cooker',two:true,
+      i:[['🥩','Beef roast slow cooked in French onion broth','Protein'],
+         ['🥔','Potatoes slow cooked in the same pot','Complex Carb'],
+         ['🥕','Carrots slow cooked in the same pot','Vegetable']],
+      tips:['Season with garlic, onion powder, thyme, and black pepper',
+            'Natural broth becomes rich gravy — spoon generously over everything',
+            'Same meal Monday'],
+      flags:['Beef roast is not the leanest cut — moderate your portion']},
+    Monday:{n:'French Onion Pot Roast',t:'Leftovers',two:true,
+      i:[['🥩','Leftover pot roast from Sunday','Protein'],
+         ['🥔','Potatoes','Complex Carb'],['🥕','Carrots','Vegetable']],
+      tips:['Reheat with a splash of beef broth'],flags:[]},
+    Tuesday:{n:'Honey Garlic Glazed Salmon',t:'Skillet',two:false,
+      i:[['🐟','6oz fresh salmon fillet','Protein'],
+         ['🌾','1 cup brown rice','Complex Carb'],
+         ['🥦','Frozen Asian medley stir fried in olive oil and soy sauce','Vegetable']],
+      tips:['Sauce: honey + soy sauce + lemon juice + garlic whisked together',
+            'Sear salmon skin side up 6 min, flip 3 min, pour sauce over and baste until glazed'],
+      flags:[]},
+    Wednesday:{n:'Creamy Tuscan Chicken Pasta',t:'Stovetop',two:true,
+      i:[['🍗','6oz fresh chicken breast with Italian seasoning and garlic','Protein'],
+         ['🍝','1 cup whole grain pasta','Complex Carb'],
+         ['🍅','Cherry tomatoes and baby spinach in cream sauce','Vegetable']],
+      tips:['Cook pasta first and set aside',
+            'Sear chicken, make cream sauce with butter, garlic, tomatoes, spinach, and a little heavy cream',
+            'Toss pasta into sauce and serve',
+            'Same meal Thursday — cream sauce gets better overnight'],
+      flags:['Keep heavy cream to 2-3 tablespoons']},
+    Thursday:{n:'Creamy Tuscan Chicken Pasta',t:'Leftovers',two:true,
+      i:[['🍗','Leftover Tuscan chicken pasta','Protein'],
+         ['🍝','Whole grain pasta','Complex Carb'],['🍅','Spinach and tomatoes in sauce','Vegetable']],
+      tips:['Reheat with a splash of water — cream sauce gets better overnight'],flags:[]},
+    Friday:{n:'Mexican Chicken Taco Night',t:'Skillet',two:false,
+      i:[['🍗','6oz fresh chicken breast strips with taco seasoning, garlic, and cumin','Protein'],
+         ['🌯','Whole grain tortillas','Complex Carb'],
+         ['🥗','Romaine lettuce, canned diced tomatoes, and salsa','Vegetable']],
+      tips:['Your bowl: Greek yogurt instead of sour cream',
+            'Family bowl: build your own tacos at the table'],flags:[]},
+    Saturday:{n:'Cheat Night',t:'Cheat',two:false,i:[],
+      tips:["Your family's choice — last meal of the day only","Sunday resume the plan"],flags:[]}
+  },
+  2:{
+    Sunday:{n:'Chicken Tortilla Soup',t:'Slow Cooker',two:true,
+      i:[['🍗','Fresh chicken breast slow cooked in broth with corn, tomatoes, black beans, and taco seasoning','Protein'],
+         ['🌽','Corn and tomatoes already in soup','Complex Carb'],
+         ['🍅','Peppers and tomatoes already in soup','Vegetable']],
+      tips:['Top with shredded cheese and Greek yogurt instead of sour cream',
+            'Same meal Monday — actually better day 2',
+            'Leftovers make great Meal 3 lunch — portion into container and reheat'],flags:[]},
+    Monday:{n:'Chicken Tortilla Soup',t:'Leftovers',two:true,
+      i:[['🍗','Leftover chicken tortilla soup','Protein'],
+         ['🌽','Corn in soup','Complex Carb'],['🍅','Tomatoes and peppers in soup','Vegetable']],
+      tips:['Reheat on stovetop or microwave'],flags:[]},
+    Tuesday:{n:'Blackened Catfish',t:'Skillet',two:false,
+      i:[['🐟','6oz fresh catfish with pre-made blackening or Cajun seasoning','Protein'],
+         ['🍠','Half sweet potato roasted with olive oil','Complex Carb'],
+         ['🥦','Frozen broccoli steamed with garlic and butter','Vegetable']],
+      tips:['Buy pre-made blackening seasoning at Walmart — zero measuring',
+            'High heat skillet with avocado oil and butter — bold crust forms',
+            'Squeeze fresh lemon over everything before serving'],flags:[]},
+    Wednesday:{n:'Italian Sausage & Pepper Skillet',t:'Stovetop',two:true,
+      i:[['🌭','Chicken or turkey sausage seared with bell peppers, onions, garlic, and Italian seasoning','Protein'],
+         ['🍝','1 cup whole grain pasta tossed in olive oil and garlic','Complex Carb'],
+         ['🫑','Bell peppers and onions cooked into the skillet','Vegetable']],
+      tips:['One pan, bold flavor, done in 20 minutes',
+            'Same meal Thursday — reheat with splash of chicken broth'],
+      flags:['Check sausage label — choose lowest sodium option at Walmart']},
+    Thursday:{n:'Italian Sausage & Pepper Skillet',t:'Leftovers',two:true,
+      i:[['🌭','Leftover sausage and pepper skillet','Protein'],
+         ['🍝','Whole grain pasta','Complex Carb'],['🫑','Bell peppers and onions','Vegetable']],
+      tips:['Reheat with splash of chicken broth'],flags:[]},
+    Friday:{n:'Cajun Pork Chops',t:'Skillet',two:false,
+      i:[['🥩','6oz fresh pork chops with Cajun seasoning, garlic powder, and onion powder','Protein'],
+         ['🍠','Half sweet potato roasted with olive oil','Complex Carb'],
+         ['🥗','Side salad with dressing','Vegetable']],
+      tips:['Sear in butter and garlic skillet — 4-5 minutes per side',
+            'Rest before serving — keeps them juicy'],flags:[]},
+    Saturday:{n:'Cheat Night',t:'Cheat',two:false,i:[],
+      tips:["Your family's choice — last meal of the day only"],flags:[]}
+  },
+  3:{
+    Sunday:{n:'BBQ Pulled Pork',t:'Slow Cooker',two:true,
+      i:[['🥩','Fresh pork shoulder trimmed of fat, slow cooked with garlic, paprika, onion powder, cumin, and BBQ sauce','Protein'],
+         ['🥔','Baked potato','Complex Carb'],
+         ['🥗','Cucumber and tomato salad with olive oil and vinegar','Vegetable']],
+      tips:['Shred pork with two forks before serving — it falls apart',
+            'Drizzle extra BBQ sauce over shredded pork',
+            'Same meal Monday — pulled pork is even better day 2'],
+      flags:['Pork shoulder is fattier — trim aggressively before cooking, moderate your portion']},
+    Monday:{n:'BBQ Pulled Pork',t:'Leftovers',two:true,
+      i:[['🥩','Leftover BBQ pulled pork','Protein'],
+         ['🥔','Baked potato','Complex Carb'],['🥗','Cucumber and tomato salad','Vegetable']],
+      tips:['Reheat with a splash of BBQ sauce'],flags:[]},
+    Tuesday:{n:'Honey Mustard Roasted Salmon',t:'Oven',two:false,
+      i:[['🐟','6oz fresh salmon fillet','Protein'],
+         ['🌾','1 cup brown rice','Complex Carb'],
+         ['🫛','Frozen green beans steamed with garlic and olive oil','Vegetable']],
+      tips:['Sauce: whole grain mustard + honey + olive oil + garlic + red pepper flakes',
+            'Pour over salmon and roast at 400F for 20 minutes',
+            'Completely different flavor from Week 1 salmon'],flags:[]},
+    Wednesday:{n:'Chicken Parmesan',t:'Oven',two:true,
+      i:[['🍗','6oz fresh chicken breast seared golden then topped with marinara and mozzarella','Protein'],
+         ['🍝','1 cup whole grain pasta tossed in olive oil and garlic','Complex Carb'],
+         ['🌿','Frozen spinach wilted in olive oil and garlic','Vegetable']],
+      tips:['Sear chicken golden in skillet, transfer to baking dish',
+            'Top with jarred marinara and shredded mozzarella, bake until bubbly',
+            'No breading — cleaner, healthier, holds up perfectly day 2',
+            'Same meal Thursday'],flags:[]},
+    Thursday:{n:'Chicken Parmesan',t:'Leftovers',two:true,
+      i:[['🍗','Leftover chicken parmesan','Protein'],
+         ['🍝','Whole grain pasta','Complex Carb'],['🌿','Spinach','Vegetable']],
+      tips:['Reheat in oven at 350F for best results'],flags:[]},
+    Friday:{n:'Garlic Herb Sirloin',t:'Oven Broiled',two:false,
+      i:[['🥩','6oz fresh sirloin with garlic, onion powder, paprika, and black pepper','Protein'],
+         ['🍠','Half sweet potato roasted with olive oil','Complex Carb'],
+         ['🥗','Mixed greens side salad with vinaigrette','Vegetable']],
+      tips:['Broil 4-5 minutes per side — rest 5 minutes before slicing',
+            'Slice thin against the grain for maximum tenderness'],flags:[]},
+    Saturday:{n:'Cheat Night',t:'Cheat',two:false,i:[],
+      tips:["Your family's choice — last meal of the day only"],flags:[]}
+  },
+  4:{
+    Sunday:{n:'Southern Smothered Chicken',t:'Slow Cooker',two:true,
+      i:[['🍗','Fresh chicken thighs slow cooked with ghee, onion, garlic, and chicken stock','Protein'],
+         ['🥔','Mashed potatoes with Lactaid milk, butter, and garlic powder','Complex Carb'],
+         ['🥦','Frozen brussels sprouts steamed with garlic and butter','Vegetable']],
+      tips:['Thicken gravy with cornstarch instead of xanthan gum',
+            'Spoon rich gravy over everything before serving',
+            'Same meal Monday — gravy gets richer overnight'],flags:[]},
+    Monday:{n:'Southern Smothered Chicken',t:'Leftovers',two:true,
+      i:[['🍗','Leftover smothered chicken with gravy','Protein'],
+         ['🥔','Mashed potatoes','Complex Carb'],['🥦','Brussels sprouts','Vegetable']],
+      tips:['Reheat with splash of chicken broth'],flags:[]},
+    Tuesday:{n:'Beef and Broccoli',t:'Skillet',two:false,
+      i:[['🥩','6oz fresh beef strips with garlic and black pepper','Protein'],
+         ['🌾','1 cup brown rice','Complex Carb'],
+         ['🥦','Frozen broccoli stir fried in olive oil and soy sauce','Vegetable']],
+      tips:['Homemade teriyaki: soy sauce + honey + garlic tossed through everything',
+            'High heat, quick toss, serve immediately'],flags:[]},
+    Wednesday:{n:'Chicken Enchiladas',t:'Oven',two:true,
+      i:[['🍗','Shredded chicken with cumin, garlic, onion powder, and taco seasoning','Protein'],
+         ['🌯','Whole grain flour tortillas rolled and filled','Complex Carb'],
+         ['🥗','Garden salad with dressing','Vegetable']],
+      tips:['Top with enchilada sauce and melted cheese',
+            'Bake at 375F for 20-25 minutes',
+            'Same meal Thursday — enchiladas are better day 2',
+            'Use whole grain flour tortillas — Mission brand at Walmart'],
+      flags:['Check tortilla label — whole grain specifically']},
+    Thursday:{n:'Chicken Enchiladas',t:'Leftovers',two:true,
+      i:[['🍗','Leftover chicken enchiladas','Protein'],
+         ['🌯','Whole grain flour tortillas','Complex Carb'],['🥗','Garden salad','Vegetable']],
+      tips:['Reheat in oven at 350F — stays crispy'],flags:[]},
+    Friday:{n:'Oven Baked Chicken Wings',t:'Oven',two:false,
+      i:[['🍗','Fresh chicken wings with garlic powder, paprika, onion powder, and black pepper','Protein'],
+         ['🍠','Frozen sweet potato fries baked per package','Complex Carb'],
+         ['🥗','Salad','Vegetable']],
+      tips:['Bake at 425F for 45-50 minutes flipping halfway — skin gets crispy, fat renders off',
+            'Everything in the oven together',
+            'Fun casual Friday night — family will love this'],flags:[]},
+    Saturday:{n:'Cheat Night',t:'Cheat',two:false,i:[],
+      tips:["Your family's choice — last meal of the day only"],flags:[]}
+  }
+};
+
+var RECIPES=[
+  {n:'French Onion Pot Roast',tags:['Beef','Slow Cooker','Week 1'],time:'6-8 hrs',
+   ing:['3-4 lb beef roast','1 packet French onion soup mix','2 cups beef broth','4 medium potatoes halved','4 carrots cut in chunks','1 tsp garlic powder','1 tsp onion powder','1 tsp thyme','Salt and black pepper'],
+   steps:['Season beef with garlic powder, onion powder, thyme, salt, and pepper',
+          'Place potatoes and carrots in bottom of slow cooker',
+          'Place seasoned beef on top of vegetables',
+          'Mix French onion soup mix with beef broth and pour over everything',
+          'Cook on low 6-8 hours until fork tender',
+          'Shred or slice beef before serving',
+          'Spoon broth over everything as gravy']},
+  {n:'Honey Garlic Glazed Salmon',tags:['Fish','Skillet','Week 1'],time:'20 min',
+   ing:['4 x 6oz fresh salmon fillets','1/3 cup honey','1/4 cup soy sauce','2 tbsp lemon juice','3 cloves garlic minced','2 cups brown rice cooked','Frozen Asian medley','Olive oil','Salt and pepper'],
+   steps:['Whisk honey, soy sauce, lemon juice, and garlic together and set aside',
+          'Pat salmon dry and season with salt and pepper',
+          'Heat olive oil in skillet over medium-high heat',
+          'Cook salmon skin side up 6 minutes until golden',
+          'Flip and cook 3 minutes more',
+          'Pour sauce over salmon and baste until glazed about 2 minutes',
+          'Stir fry Asian medley with splash of soy sauce in same pan',
+          'Serve over brown rice']},
+  {n:'Creamy Tuscan Chicken Pasta',tags:['Chicken','Stovetop','Week 1'],time:'30 min',
+   ing:['4 x 6oz fresh chicken breasts','1 cup whole grain pasta','1 cup cherry tomatoes halved','2 cups baby spinach','3 cloves garlic minced','2-3 tbsp heavy cream','2 tbsp butter','1/4 cup parmesan grated','Italian seasoning','Salt and pepper','Olive oil'],
+   steps:['Cook pasta per package and drain and set aside',
+          'Season chicken with Italian seasoning, salt, and pepper',
+          'Sear chicken in olive oil 5-6 min per side until cooked through and set aside',
+          'Melt butter in same skillet and add garlic and cook 1 minute',
+          'Add cherry tomatoes and cook 2-3 minutes until bursting',
+          'Add spinach and stir until wilted',
+          'Stir in cream and parmesan and simmer 2 minutes',
+          'Slice chicken and return to skillet and toss pasta into sauce']},
+  {n:'Mexican Chicken Taco Night',tags:['Chicken','Skillet','Week 1'],time:'20 min',
+   ing:['4 x 6oz fresh chicken breasts cut in strips','Taco seasoning packet','1 tsp garlic powder','1 tsp cumin','Whole grain tortillas','Romaine lettuce chopped','Canned diced tomatoes drained','Salsa','Greek yogurt','Olive oil'],
+   steps:['Season chicken strips with taco seasoning, garlic powder, and cumin',
+          'Cook in olive oil skillet over medium-high heat 4-5 min per side',
+          'Set up taco station with tortillas, lettuce, tomatoes, salsa, and Greek yogurt',
+          'Family builds their own tacos at the table',
+          'Your bowl: Greek yogurt instead of sour cream']},
+  {n:'Chicken Tortilla Soup',tags:['Chicken','Slow Cooker','Week 2'],time:'6-8 hrs',
+   ing:['2 lbs fresh chicken breasts','2 cups chicken broth','1 can diced tomatoes','1 can black beans drained','1 cup frozen corn','1 taco seasoning packet','1 tsp garlic powder','1 tsp cumin','Salt and pepper','Shredded cheese','Greek yogurt'],
+   steps:['Place all ingredients in slow cooker',
+          'Stir and season with salt and pepper',
+          'Cook on low 6-8 hours until chicken is tender',
+          'Shred chicken with two forks directly in slow cooker',
+          'Stir shredded chicken back into soup',
+          'Top with shredded cheese and Greek yogurt instead of sour cream',
+          'Leftovers make excellent Meal 3 lunch']},
+  {n:'Blackened Catfish',tags:['Fish','Skillet','Week 2'],time:'20 min',
+   ing:['4 x 6oz fresh catfish fillets','Pre-made blackening or Cajun seasoning','2 sweet potatoes','Frozen broccoli','Avocado oil','2 tbsp butter','1 lemon'],
+   steps:['Preheat oven to 400F and halve sweet potatoes and drizzle with olive oil and roast 25-30 min',
+          'Pat catfish completely dry with paper towels',
+          'Coat both sides generously with blackening seasoning',
+          'Heat avocado oil in heavy skillet over high heat until smoking',
+          'Add butter then immediately add catfish',
+          'Cook 3-4 minutes per side until deeply blackened crust forms',
+          'Steam frozen broccoli per package',
+          'Squeeze fresh lemon over everything before serving']},
+  {n:'Italian Sausage & Pepper Skillet',tags:['Sausage','Stovetop','Week 2'],time:'25 min',
+   ing:['4 chicken or turkey sausage links sliced','1 cup whole grain pasta','2 bell peppers sliced','1 onion sliced','3 cloves garlic minced','Italian seasoning','Olive oil','Salt and pepper'],
+   steps:['Cook pasta per package and drain and toss in olive oil and set aside',
+          'Brown sliced sausage in olive oil 4-5 minutes',
+          'Add bell peppers and onions and cook 5-6 minutes until softened',
+          'Add garlic and Italian seasoning and cook 1 minute',
+          'Season with salt and pepper',
+          'Serve sausage and pepper mixture over pasta']},
+  {n:'Cajun Pork Chops',tags:['Pork','Skillet','Week 2'],time:'25 min',
+   ing:['4 x 6oz fresh pork chops','Cajun seasoning','1 tsp garlic powder','1 tsp onion powder','2 tbsp butter','3 cloves garlic minced','2 sweet potatoes','Bagged salad mix','Dressing','Olive oil'],
+   steps:['Preheat oven to 400F and cut sweet potatoes in wedges and toss in olive oil and roast 25-30 min',
+          'Pat pork chops dry and season with Cajun seasoning, garlic powder, and onion powder',
+          'Heat butter in skillet over medium-high heat',
+          'Cook pork chops 4-5 minutes per side until cooked through',
+          'Add minced garlic in last minute of cooking',
+          'Rest 5 minutes before serving — keeps them juicy',
+          'Serve with roasted sweet potato and side salad']},
+  {n:'BBQ Pulled Pork',tags:['Pork','Slow Cooker','Week 3'],time:'8 hrs',
+   ing:['3-4 lb pork shoulder trimmed of visible fat','1 tsp garlic powder','1 tsp paprika','1 tsp onion powder','1 tsp cumin','1/2 cup chicken broth','1/2 cup BBQ sauce plus more','4 baked potatoes','Cucumbers sliced','Tomatoes diced','Olive oil','Vinegar or lemon juice'],
+   steps:['Trim all visible fat from pork shoulder',
+          'Rub garlic powder, paprika, onion powder, cumin, salt, and pepper all over pork',
+          'Place in slow cooker and add chicken broth and BBQ sauce',
+          'Cook on low 8 hours until completely tender',
+          'Shred pork with two forks and stir into juices and add more BBQ sauce to taste',
+          'Bake potatoes in microwave or oven',
+          'Mix cucumber and tomato with olive oil, vinegar, salt, and pepper']},
+  {n:'Honey Mustard Roasted Salmon',tags:['Fish','Oven','Week 3'],time:'30 min',
+   ing:['4 x 6oz fresh salmon fillets','1/2 cup whole grain mustard','1/4 cup honey','1/4 cup olive oil','2 cloves garlic minced','1/2 tsp red pepper flakes','2 cups brown rice cooked','Frozen green beans'],
+   steps:['Preheat oven to 400F',
+          'Whisk mustard, honey, olive oil, garlic, and red pepper flakes together',
+          'Season salmon with salt and pepper',
+          'Place in baking dish and pour sauce evenly over each fillet',
+          'Roast 18-20 minutes until salmon flakes easily',
+          'Steam green beans per package',
+          'Serve over brown rice']},
+  {n:'Chicken Parmesan',tags:['Chicken','Oven','Week 3'],time:'35 min',
+   ing:['4 x 6oz fresh chicken breasts','1 jar marinara sauce','1.5 cups shredded mozzarella','1 cup whole grain pasta','2 cups frozen spinach','3 cloves garlic minced','Olive oil','Italian seasoning'],
+   steps:['Preheat oven to 375F',
+          'Cook pasta per package and drain and toss with olive oil and garlic and set aside',
+          'Season chicken with Italian seasoning, salt, and pepper',
+          'Sear chicken in olive oil 3-4 min per side until golden but not cooked through',
+          'Transfer to baking dish and top with marinara and mozzarella',
+          'Bake 15-18 minutes until bubbly',
+          'Wilt spinach in same skillet with garlic and olive oil',
+          'Serve chicken over pasta with spinach alongside']},
+  {n:'Garlic Herb Sirloin',tags:['Beef','Oven Broiled','Week 3'],time:'20 min',
+   ing:['4 x 6oz fresh sirloin steaks','1 tsp garlic powder','1 tsp onion powder','1 tsp paprika','Black pepper and salt','2 sweet potatoes','Bagged mixed greens','Vinaigrette dressing','Olive oil'],
+   steps:['Preheat broiler to high',
+          'Mix garlic powder, onion powder, paprika, salt, and pepper',
+          'Pat sirloin dry and season generously on both sides',
+          'Halve sweet potatoes and drizzle with olive oil and roast at 400F for 25-30 min',
+          'Broil sirloin 4-5 minutes per side for medium',
+          'Rest 5 minutes before slicing — critical for juicy steak',
+          'Slice thin against the grain',
+          'Serve with sweet potato and mixed greens salad']},
+  {n:'Southern Smothered Chicken',tags:['Chicken','Slow Cooker','Week 4'],time:'6-8 hrs',
+   ing:['2 lbs fresh chicken thighs','4 tbsp ghee divided','1 medium onion sliced','3 cloves garlic minced','1.5 cups chicken stock','1 tbsp cornstarch','Salt and pepper','4 russet potatoes','Lactaid milk','Butter','Garlic powder','Frozen brussels sprouts'],
+   steps:['Season chicken thighs with salt and pepper',
+          'Brown chicken in 2 tbsp ghee in skillet 3-4 min per side',
+          'Transfer to slow cooker and add onion, garlic, chicken stock, and remaining ghee',
+          'Cook on low 6-8 hours',
+          'Transfer chicken to plate and whisk cornstarch into liquid to thicken gravy',
+          'Microwave potatoes and mash with Lactaid milk, butter, and garlic powder',
+          'Steam brussels sprouts per package',
+          'Spoon gravy generously over chicken and potatoes']},
+  {n:'Beef and Broccoli',tags:['Beef','Skillet','Week 4'],time:'20 min',
+   ing:['1.5 lbs fresh beef strips','1/3 cup soy sauce','2 tbsp honey','3 cloves garlic minced','1 tbsp cornstarch','2 cups frozen broccoli','2 cups brown rice cooked','Olive oil','Black pepper'],
+   steps:['Mix soy sauce, honey, garlic, and cornstarch for teriyaki sauce',
+          'Season beef strips with black pepper',
+          'Heat olive oil in wok over high heat until smoking',
+          'Cook beef 2-3 minutes until browned without stirring',
+          'Remove beef from pan',
+          'Stir fry broccoli 3-4 minutes',
+          'Return beef and pour sauce over everything',
+          'Toss and cook 1-2 minutes until sauce thickens',
+          'Serve over brown rice immediately']},
+  {n:'Chicken Enchiladas',tags:['Chicken','Oven','Week 4'],time:'45 min',
+   ing:['2 lbs fresh chicken breasts','1 tsp cumin','1 tsp garlic powder','1 tsp onion powder','1 tsp taco seasoning','1 can enchilada sauce','Whole grain flour tortillas','1.5 cups shredded Mexican cheese blend','Bagged garden salad','Dressing','Olive oil'],
+   steps:['Preheat oven to 375F',
+          'Cook chicken in olive oil skillet 6 min per side until cooked through',
+          'Shred chicken and season with cumin, garlic powder, onion powder, and taco seasoning',
+          'Spread thin layer of enchilada sauce on bottom of 9x13 baking dish',
+          'Fill each tortilla with shredded chicken and roll tightly and place seam side down in dish',
+          'Pour remaining enchilada sauce over top and sprinkle with cheese',
+          'Bake 20-25 minutes until bubbly',
+          'Serve with garden salad on the side']},
+  {n:'Oven Baked Chicken Wings',tags:['Chicken','Oven','Week 4'],time:'55 min',
+   ing:['3 lbs fresh chicken wings','1 tsp garlic powder','1 tsp paprika','1 tsp onion powder','1/2 tsp black pepper','Salt','Frozen sweet potato fries','Bagged salad','Dressing','Cooking spray'],
+   steps:['Preheat oven to 425F',
+          'Pat wings completely dry with paper towels — key to crispy skin',
+          'Season generously with garlic powder, paprika, onion powder, salt, and pepper',
+          'Spray baking rack with cooking spray and place wings on rack over baking sheet',
+          'Bake 45-50 minutes flipping halfway — skin renders crispy and fat drips off',
+          'Bake sweet potato fries on separate sheet per package',
+          'Serve with salad on the side']},
+  {n:'Turkey Burger Night',tags:['Turkey','Skillet','Swap'],time:'25 min',
+   ing:['2 lbs ground turkey','1 tsp garlic powder','1 tsp onion powder','1 tsp paprika','1 tbsp Worcestershire sauce','Salt and pepper','Whole grain buns','Romaine lettuce','Tomato sliced','Onion sliced','Condiments of choice'],
+   steps:['Mix ground turkey with all seasonings — do not overwork the meat',
+          'Form into patties',
+          'Can be made ahead and refrigerated',
+          'Cook patties in skillet 5-6 minutes per side until 165F internal',
+          'Rest 3 minutes before serving',
+          'Family builds their own burgers at the table']},
+  {n:'Beef Stir Fry',tags:['Beef','Skillet','Swap'],time:'20 min',
+   ing:['1.5 lbs fresh beef strips','1/3 cup soy sauce','2 tbsp honey','3 cloves garlic minced','Frozen Asian medley','2 cups brown rice cooked','Olive oil','Black pepper'],
+   steps:['Mix soy sauce, honey, and garlic for teriyaki sauce',
+          'Season beef with black pepper',
+          'Heat olive oil in wok over very high heat',
+          'Cook beef 2-3 minutes until browned',
+          'Remove beef and stir fry Asian medley 3-4 minutes',
+          'Return beef and add sauce and toss 1-2 minutes',
+          'Serve immediately over brown rice']},
+  {n:'Garlic Herb Pork Chops',tags:['Pork','Oven','Swap'],time:'30 min',
+   ing:['4 x 6oz fresh pork chops','1 tsp garlic powder','1 tsp rosemary','1 tsp paprika','1 tsp onion powder','Olive oil','Salt and pepper'],
+   steps:['Preheat oven to 400F',
+          'Mix garlic powder, rosemary, paprika, onion powder, salt, and pepper',
+          'Pat chops dry and season generously on both sides',
+          'Sear in oven-safe skillet 3-4 min per side until golden',
+          'Transfer skillet to oven and roast 10-12 minutes until 145F internal',
+          'Rest 5 minutes before serving']},
+  {n:'Tuscan Butter Salmon',tags:['Fish','Skillet','Swap'],time:'25 min',
+   ing:['4 x 6oz fresh salmon fillets','3 tbsp butter','3 cloves garlic minced','1 cup cherry tomatoes halved','2 cups baby spinach','2-3 tbsp heavy cream','1/4 cup parmesan grated','Fresh basil and parsley','Lemon wedges','Salt and pepper','Olive oil'],
+   steps:['Pat salmon dry and season with salt and pepper',
+          'Heat olive oil in large skillet over medium-high heat',
+          'Sear salmon skin side up 6 minutes until golden',
+          'Flip and cook 3 minutes more and remove to plate',
+          'Reduce heat and melt butter and add garlic and cook 1 minute',
+          'Add tomatoes and cook 2 minutes until beginning to burst',
+          'Add spinach and stir until wilted',
+          'Stir in cream and parmesan and simmer 2 minutes',
+          'Return salmon to skillet and spoon sauce over top',
+          'Garnish with fresh herbs and lemon']},
+  {n:'Bruschetta Salmon',tags:['Fish','Skillet','Swap'],time:'25 min',
+   ing:['4 x 6oz fresh salmon fillets','3 cups cherry tomatoes halved','2 shallots minced','3 cloves garlic minced','Juice of half lemon','Fresh basil torn','Parmesan grated','Balsamic glaze','Dried oregano','Olive oil','Salt and pepper'],
+   steps:['Season salmon with oregano, salt, and pepper',
+          'Heat olive oil in large skillet over medium heat',
+          'Cook salmon skin side up 6 minutes until golden',
+          'Flip and cook 6 minutes more and transfer to plate',
+          'Cook garlic and shallots 1 minute in same pan',
+          'Add tomatoes and cook until beginning to burst',
+          'Remove from heat and squeeze lemon juice over tomatoes',
+          'Spoon tomato mixture over salmon',
+          'Top with fresh basil and parmesan and drizzle with balsamic glaze']},
+  {n:'Baked Pineapple Salmon',tags:['Fish','Oven','Swap'],time:'35 min',
+   ing:['4 x 6oz fresh salmon fillets','1 can pineapple rings drained','3 tbsp melted butter','3 tbsp soy sauce','2 cloves garlic minced','1 tsp sesame oil','1/2 tsp red pepper flakes','Sesame seeds for garnish','Green onions sliced','Lime wedges'],
+   steps:['Preheat oven to 350F',
+          'Line baking sheet with foil and lay pineapple rings in center',
+          'Season salmon with salt and pepper and place on top of pineapple',
+          'Whisk butter, soy sauce, garlic, sesame oil, and red pepper flakes together',
+          'Brush sauce all over salmon',
+          'Bake 25 minutes until cooked through',
+          'Broil 2 minutes until slightly caramelized',
+          'Garnish with sesame seeds and green onions and serve with lime']},
+  {n:'Herb Roasted Pork Tenderloin',tags:['Pork','Oven','Swap'],time:'35 min',
+   ing:['2 pork tenderloins','1 tsp garlic powder','1 tsp rosemary','1 tsp paprika','1 tsp onion powder','Salt and pepper','4 medium potatoes halved','Frozen green beans','Olive oil'],
+   steps:['Preheat oven to 425F',
+          'Mix garlic powder, rosemary, paprika, onion powder, salt, and pepper',
+          'Pat tenderloins dry and rub seasoning all over',
+          'Toss potato halves in olive oil, salt, and pepper',
+          'Arrange potatoes on sheet pan and place tenderloins alongside',
+          'Roast 20-25 minutes until 145F internal',
+          'Rest 5 minutes before slicing',
+          'Steam green beans per package']},
+  {n:'Lemon Herb Tilapia',tags:['Fish','Oven','Swap'],time:'20 min',
+   ing:['4 x 6oz fresh tilapia fillets','2 cloves garlic minced','Juice of 1 lemon','Dried basil','Olive oil','Salt and pepper'],
+   steps:['Preheat oven to 400F',
+          'Mix olive oil, lemon juice, garlic, basil, salt, and pepper',
+          'Place tilapia in baking dish',
+          'Pour sauce evenly over fillets',
+          'Bake 10-12 minutes until tilapia flakes easily',
+          'Squeeze extra fresh lemon over everything right before serving']},
+  {n:'Fish Taco Night',tags:['Fish','Oven','Swap'],time:'25 min',
+   ing:['4 x 6oz fresh tilapia fillets','1 tsp cumin','1 tsp garlic powder','1 tsp paprika','Juice of 1 lime','Whole grain tortillas','Romaine lettuce chopped','Canned diced tomatoes drained','Salsa','Greek yogurt','Olive oil'],
+   steps:['Preheat oven to 400F',
+          'Season tilapia with cumin, garlic powder, paprika, salt, and pepper',
+          'Drizzle with olive oil and lime juice',
+          'Bake 10-12 minutes until tilapia flakes easily',
+          'Flake tilapia into pieces for tacos',
+          'Set up taco station with tortillas, lettuce, tomatoes, salsa, and Greek yogurt',
+          'Your bowl: Greek yogurt instead of sour cream']}
+];
+
+var SWAP=[
+  {n:'Turkey Burger Night',p:'Turkey',d:'Sunday/Monday',m:'Skillet'},
+  {n:'Beef Stir Fry',p:'Beef',d:'Tuesday',m:'Skillet'},
+  {n:'Garlic Herb Pork Chops',p:'Pork',d:'Wednesday/Thursday',m:'Oven'},
+  {n:'Tuscan Butter Salmon',p:'Fish',d:'Tuesday',m:'Skillet'},
+  {n:'Bruschetta Salmon',p:'Fish',d:'Tuesday',m:'Skillet'},
+  {n:'Baked Pineapple Salmon',p:'Fish',d:'Tuesday',m:'Oven'},
+  {n:'Herb Roasted Pork Tenderloin',p:'Pork',d:'Wednesday/Thursday',m:'Oven'},
+  {n:'Lemon Herb Tilapia',p:'Fish',d:'Tuesday or Friday',m:'Oven'},
+  {n:'Fish Taco Night',p:'Fish',d:'Friday',m:'Oven'}
+];
+
+var GROC={
+  m1:{
+    A:{Protein:['Eggs (carton)'],Dairy:['Shredded cheese'],Produce:['Baby spinach bag']},
+    B:{Protein:['Turkey sausage links']},
+    C:{Dairy:['Plain Greek yogurt (32oz)'],Pantry:['Granola']},
+    D:{Pantry:['Rolled oats'],Dairy:['Lactaid milk']},
+    E:{Pantry:['Whole grain bread','Cinnamon','Vanilla extract'],Protein:['Eggs (carton)']}
+  },
+  m2:{
+    'Nut Butter / Nuts':{Pantry:['Peanut or almond butter']},
+    'String Cheese':{Dairy:['String cheese']},
+    'Avocado':{Produce:['Avocados']},
+    'Greek Yogurt':{Dairy:['Plain Greek yogurt (32oz)']}
+  },
+  m3:{
+    A:{Protein:['Chicken breast (6oz per serving)'],Pantry:['Taco seasoning','Canned corn','Canned diced tomatoes','Salsa'],Produce:['Romaine lettuce'],Dairy:['Plain Greek yogurt']},
+    B:{Frozen:['Frozen grilled chicken strips'],Produce:['Mixed greens bag','Cucumber'],Pantry:['Canned diced tomatoes','Salad dressing']},
+    C:{Protein:['Deli turkey or chicken'],Pantry:['Whole grain bread','Canned diced tomatoes','Mustard or mayo'],Produce:['Baby spinach bag','Cucumber']},
+    D:{Protein:['Deli turkey or chicken'],Pantry:['Whole grain wraps','Canned diced tomatoes','Mustard or mayo'],Produce:['Baby spinach bag','Cucumber']},
+    E:{Frozen:['Vital Pursuit Chicken Spinach Garlic Alfredo Bowl']},
+    F:{Protein:['Chicken or turkey (6oz)'],Pantry:['Whole grain tortillas','Salsa'],Dairy:['Shredded cheese','Greek yogurt']},
+    G:{Protein:['Hard boiled eggs (pre-boiled)'],Pantry:['Mayo','Mustard','Whole grain bread or wraps'],Produce:['Romaine or mixed greens','Cucumber']},
+    H:{Pantry:['Canned tuna (3-4 cans)','Mayo','Mustard','Whole grain bread or wraps'],Produce:['Celery','Lemon','Romaine or mixed greens']},
+    I:{Protein:['Rotisserie chicken (Walmart)'],Pantry:['Mayo','Whole grain bread or wraps'],Produce:['Celery','Romaine or mixed greens']}
+  },
+  din:{
+    1:{
+      Sunday:{Protein:['Beef roast (3-4 lbs)'],Produce:['Potatoes (4 medium)','Carrots (1 bag)','Garlic'],Pantry:['French onion soup mix','Beef broth','Thyme']},
+      Tuesday:{Protein:['Fresh salmon fillets (4x6oz)'],Pantry:['Brown rice','Honey','Soy sauce'],Produce:['Garlic','Lemon'],Frozen:['Frozen Asian medley']},
+      Wednesday:{Protein:['Chicken breasts (4x6oz)'],Pantry:['Whole grain pasta','Italian seasoning','Jarred marinara','Heavy cream','Parmesan'],Produce:['Cherry tomatoes','Baby spinach','Garlic'],Dairy:['Butter']},
+      Friday:{Protein:['Chicken breasts (4x6oz)'],Pantry:['Taco seasoning','Cumin','Whole grain tortillas','Canned diced tomatoes','Salsa'],Produce:['Romaine lettuce','Garlic'],Dairy:['Greek yogurt']}
+    },
+    2:{
+      Sunday:{Protein:['Chicken breasts (2 lbs)'],Pantry:['Chicken broth','Canned diced tomatoes','Canned black beans','Taco seasoning','Cumin'],Frozen:['Frozen corn'],Dairy:['Shredded cheese','Greek yogurt']},
+      Tuesday:{Protein:['Fresh catfish fillets (4x6oz)'],Pantry:['Blackening or Cajun seasoning','Avocado oil'],Produce:['Sweet potatoes (2)','Lemon','Garlic'],Frozen:['Frozen broccoli'],Dairy:['Butter']},
+      Wednesday:{Protein:['Chicken or turkey sausage (4 links)'],Pantry:['Whole grain pasta','Italian seasoning'],Produce:['Bell peppers (2)','Onion','Garlic']},
+      Friday:{Protein:['Pork chops (4x6oz)'],Pantry:['Cajun seasoning'],Produce:['Sweet potatoes (2)','Garlic'],Dairy:['Butter'],Produce2:['Bagged salad mix','Dressing']}
+    },
+    3:{
+      Sunday:{Protein:['Pork shoulder (3-4 lbs)'],Pantry:['Garlic powder','Paprika','Onion powder','Cumin','Chicken broth','BBQ sauce'],Produce:['Potatoes (4 large)','Cucumbers','Tomatoes','Garlic']},
+      Tuesday:{Protein:['Fresh salmon fillets (4x6oz)'],Pantry:['Whole grain mustard','Honey','Red pepper flakes','Brown rice'],Produce:['Garlic'],Frozen:['Frozen green beans']},
+      Wednesday:{Protein:['Chicken breasts (4x6oz)'],Pantry:['Jarred marinara','Whole grain pasta','Italian seasoning'],Dairy:['Shredded mozzarella'],Produce:['Garlic'],Frozen:['Frozen spinach']},
+      Friday:{Protein:['Sirloin steaks (4x6oz)'],Pantry:['Garlic powder','Onion powder','Paprika'],Produce:['Sweet potatoes (2)'],Produce2:['Bagged mixed greens','Vinaigrette dressing']}
+    },
+    4:{
+      Sunday:{Protein:['Chicken thighs (2 lbs)'],Pantry:['Ghee','Chicken stock','Cornstarch'],Produce:['Onion','Garlic','Russet potatoes (4)'],Dairy:['Lactaid milk','Butter'],Frozen:['Frozen brussels sprouts']},
+      Tuesday:{Protein:['Fresh beef strips (1.5 lbs)'],Pantry:['Soy sauce','Honey','Cornstarch','Brown rice'],Produce:['Garlic'],Frozen:['Frozen broccoli']},
+      Wednesday:{Protein:['Chicken breasts (2 lbs)'],Pantry:['Cumin','Garlic powder','Onion powder','Taco seasoning','Canned enchilada sauce','Whole grain flour tortillas'],Dairy:['Shredded Mexican cheese blend'],Produce2:['Bagged garden salad','Dressing']},
+      Friday:{Protein:['Fresh chicken wings (3 lbs)'],Pantry:['Garlic powder','Paprika','Onion powder'],Frozen:['Frozen sweet potato fries'],Produce2:['Bagged salad','Dressing']}
+    }
+  }
+};
+
+var sel={};
+
+// ── CORE NAV ──────────────────────────────────────────────────────────────
+function go(id,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('pg-'+id).classList.add('on');
+  btn.classList.add('active');
+}
+
+// ── WEEK TABS ─────────────────────────────────────────────────────────────
+function showWk(n,btn){
+  document.querySelectorAll('.wtb').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderDin(n);
+}
+
+// ── DINNER RENDER ─────────────────────────────────────────────────────────
+function tagCls(t){
+  if(t==='Slow Cooker') return 'dtg-sc';
+  if(t==='Leftovers') return 'dtg-lf';
+  if(t==='Cheat') return 'dtg-ch';
+  return 'dtg-ot';
+}
+function bCls(b){
+  if(b==='Protein') return 'bp';
+  if(b==='Complex Carb') return 'bc';
+  if(b==='Vegetable') return 'bv';
+  return 'bf';
+}
+
+function renderDin(wk){
+  var d=DIN[wk]; var h='';
+  DAYS.forEach(function(day){
+    var r=d[day]; if(!r) return;
+    var lbl=day;
+    if(r.two && day==='Sunday') lbl='Sunday & Monday';
+    if(r.two && day==='Wednesday') lbl='Wednesday & Thursday';
+    var cls='dc'+(r.two?' td':'');
+    h+='<div class="'+cls+'">';
+    h+='<div class="dh"><div class="dd">'+lbl+'</div>';
+    h+='<div class="dtg '+tagCls(r.t)+'">'+r.t+'</div></div>';
+    h+='<div class="db"><div class="dn">'+r.n+'</div>';
+    if(r.i.length){
+      h+='<div class="di">';
+      r.i.forEach(function(it){
+        h+='<div class="ditem"><span>'+it[0]+'</span>';
+        h+='<span>'+it[1]+' <span class="'+bCls(it[2])+'">'+it[2]+'</span></span></div>';
+      });
+      h+='</div>';
+    }
+    if(r.tips.length||r.flags.length){
+      h+='<div class="dtips">';
+      r.tips.forEach(function(t){h+='<div class="dtip2">&#x2728; '+t+'</div>';});
+      r.flags.forEach(function(f){h+='<div class="dflag">&#x26A0; '+f+'</div>';});
+      h+='</div>';
+    }
+    h+='</div></div>';
+  });
+  document.getElementById('dinnerOut').innerHTML=h;
+}
+
+// ── RECIPE RENDER ─────────────────────────────────────────────────────────
+function renderRec(q){
+  var lq=(q||'').toLowerCase();
+  var filtered=RECIPES.filter(function(r){
+    return r.n.toLowerCase().indexOf(lq)>=0 ||
+      r.tags.some(function(t){return t.toLowerCase().indexOf(lq)>=0;}) ||
+      r.ing.some(function(i){return i.toLowerCase().indexOf(lq)>=0;});
+  });
+  var h='';
+  filtered.forEach(function(r,i){
+    h+='<div class="rc"><div class="rch" onclick="togR('+i+')">';
+    h+='<div><div class="rcn">'+r.n+'</div><div class="rcm">&#x23F1; '+r.time+'</div></div>';
+    h+='<div class="rct">'+r.tags.map(function(t){return '<span class="rctg">'+t+'</span>';}).join('')+'</div>';
+    h+='</div><div class="rcb" id="rb'+i+'">';
+    h+='<div class="rst">Ingredients</div><div class="ring">';
+    r.ing.forEach(function(x){h+='<div class="ritem">'+x+'</div>';});
+    h+='</div><div class="rst">Instructions</div><div class="rsteps">';
+    r.steps.forEach(function(s,j){
+      h+='<div class="rstep"><div class="rsn">'+(j+1)+'</div><div>'+s+'</div></div>';
+    });
+    h+='</div></div></div>';
+  });
+  if(!filtered.length) h='<div class="gempty">No recipes found.</div>';
+  document.getElementById('recOut').innerHTML=h;
+}
+function togR(i){
+  var el=document.getElementById('rb'+i);
+  el.className=el.className.indexOf('op')>=0?'rcb':'rcb op';
+}
+function filterR(q){renderRec(q);}
+
+// ── SWAP RENDER ───────────────────────────────────────────────────────────
+function renderSwap(){
+  var h='';
+  SWAP.forEach(function(s){
+    h+='<div class="swc"><div><div class="swn">'+s.n+'</div>';
+    h+='<div class="swb">'+s.p+' &middot; '+s.m+' &middot; Best for '+s.d+'</div></div>';
+    h+='<button class="nb" onclick="openRec(\''+s.n+'\')">Recipe</button></div>';
+  });
+  document.getElementById('swapOut').innerHTML=h;
+}
+function openRec(name){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('pg-recipes').classList.add('on');
+  document.querySelectorAll('.tab')[3].classList.add('active');
+  var el=document.getElementById('rsrch');
+  el.value=name;
+  renderRec(name);
+}
+
+// ── PLANNER ───────────────────────────────────────────────────────────────
+function getFruit(){
+  var el=document.getElementById('fruitIn');
+  return el?el.value.trim():'';
+}
+function aObj(arr){
+  var o={};
+  arr.forEach(function(v){o[v]=v;});
+  return o;
+}
+
+function buildPlanner(){
+  var wk=parseInt(document.getElementById('wksel').value);
+  var h='';
+  DAYS.forEach(function(day){
+    var din=DIN[wk][day];
+    var s=sel[day]||{};
+    var tc=din?(din.t==='Slow Cooker'?'dtg-sc':din.t==='Cheat'?'dtg-ch':'dtg-lf'):'';
+    h+='<div class="dpc"><div class="dph">';
+    h+='<div class="dpn">'+day+'</div>';
+    if(din) h+='<div class="dtg '+tc+'" style="font-size:.58rem;padding:.12rem .4rem;border-radius:100px;">'+din.t+'</div>';
+    h+='</div>';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 1.2rem 0">';
+    h+='<div id="pb'+day+'" class="pb"></div></div>';
+    h+='<div class="pbb"><div class="pbf" id="pbf'+day+'"></div></div>';
+    h+='<div class="dpb">';
+
+    // Meal 1
+    h+=mRow(day,'m1','Meal 1\n8am',M1O,'Choose Breakfast',s.m1);
+    if(s.m1==='A'||s.m1==='B'){
+      h+='<div class="dmr"><div></div><div>';
+      h+='<div style="font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(28,43,28,.35);margin-bottom:.3rem">Carb Choice:</div>';
+      h+='<div class="nest">';
+      CARBS.forEach(function(c){
+        var lbl=c==='Fruit'?('Fruit: '+(getFruit()||'_____')):c;
+        h+='<button class="nb'+(s.m1carb===c?' on2':'')+'" onclick="saveN(\'m1carb\',\''+day+'\',\''+c+'\')">'+lbl+'</button>';
+      });
+      h+='</div></div></div>';
+    }
+    // Meal 2
+    h+=mRow(day,'m2','Meal 2\n10:30am',aObj(M2P),'Choose Pairing',s.m2);
+    // Meal 3
+    h+=mRow(day,'m3','Meal 3\n1pm',M3O,'Choose Lunch',s.m3);
+    if(s.m3==='C'||s.m3==='D'){
+      h+='<div class="dmr"><div></div><div>';
+      h+='<div style="font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(28,43,28,.35);margin-bottom:.3rem">Protein Choice:</div>';
+      h+='<div class="nest">';
+      SPROTS.forEach(function(p){
+        h+='<button class="nb'+(s.m3prot===p?' on2':'')+'" onclick="saveN(\'m3prot\',\''+day+'\',\''+p+'\')">'+p+'</button>';
+      });
+      h+='</div></div></div>';
+    }
+    // Meal 4
+    h+=mRow(day,'m4','Meal 4\n4pm',aObj(M4P),'Choose Pairing',s.m4);
+    // Meal 5
+    if(day==='Saturday'){
+      h+='<div class="dmr"><div class="dml">Meal 5<br>7pm</div>';
+      h+='<div class="dmf" style="color:#C4622D;font-weight:700">Cheat Night</div></div>';
+    } else if(din){
+      h+='<div class="dmr"><div class="dml">Meal 5<br>7pm</div>';
+      h+='<div class="dmf">'+din.n+'</div></div>';
+    }
+    // Meal 6
+    h+='<div class="dmr"><div class="dmo">Meal 6<br>Optional<br>&lt;8pm</div>';
+    h+='<select class="dms" id="m6'+day+'" onchange="saveS(\'m6\',\''+day+'\',this.value)" style="border-style:dashed;background:rgba(107,158,107,.04)">';
+    h+='<option value="">-- Only if still hungry --</option>';
+    Object.keys(M6O).forEach(function(k){
+      h+='<option value="'+k+'"'+(s.m6===k?' selected':'')+'>'+k+': '+M6O[k]+'</option>';
+    });
+    h+='</select></div>';
+
+    h+='</div></div>';
+  });
+  document.getElementById('dayPlan').innerHTML=h;
+  DAYS.forEach(function(d){updProt(d);});
+}
+
+function mRow(day,meal,lbl,opts,ph,cur){
+  var h='<div class="dmr"><div class="dml">'+lbl.replace('\n','<br>')+'</div>';
+  h+='<select class="dms" id="'+meal+day+'" onchange="saveS(\''+meal+'\',\''+day+'\',this.value)">';
+  h+='<option value="">-- '+ph+' --</option>';
+  Object.keys(opts).forEach(function(k){
+    h+='<option value="'+k+'"'+(cur===k?' selected':'')+'>'+k+': '+opts[k]+'</option>';
+  });
+  h+='</select></div>';
+  return h;
+}
+
+function saveS(meal,day,val){
+  if(!sel[day]) sel[day]={};
+  sel[day][meal]=val;
+  updProt(day);
+  if(meal==='m1'||meal==='m3') buildPlanner();
+}
+function saveN(fld,day,val){
+  if(!sel[day]) sel[day]={};
+  sel[day][fld]=val;
+  updProt(day);
+  buildPlanner();
+}
+function updateAllProt(){DAYS.forEach(function(d){updProt(d);});}
+function clearAll(){sel={};buildPlanner();}
+
+function pcol(g){
+  if(g>=PT) return '#4A8A2A';
+  if(g>=116) return '#B8860B';
+  return '#C4622D';
+}
+function calcP(day,wk){
+  var s=sel[day]||{}; var t=0;
+  if(s.m1) t+=PROT.m1[s.m1]||0;
+  if(s.m2) t+=PROT.m2[s.m2]||0;
+  if(s.m3) t+=PROT.m3[s.m3]||0;
+  if(s.m4) t+=PROT.m4[s.m4]||0;
+  if(s.m6) t+=PROT.m6[s.m6]||0;
+  if(day!=='Saturday') t+=(PROT.din[wk]&&PROT.din[wk][day])||0;
+  return t;
+}
+function updProt(day){
+  var wk=parseInt((document.getElementById('wksel')||{value:'1'}).value);
+  var pb=document.getElementById('pb'+day);
+  var pf=document.getElementById('pbf'+day);
+  if(!pb) return;
+  var g=calcP(day,wk);
+  var c=pcol(g);
+  var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
+  pb.innerHTML=em+' <span style="color:'+c+';font-weight:700">'+g+'g</span> <span style="color:rgba(28,43,28,.3);font-size:.65rem">/ '+PT+'g</span>';
+  if(pf){var pct=Math.min(100,Math.round(g/PT*100));pf.style.width=pct+'%';pf.style.background=c;}
+}
+
+// ── GENERATE ──────────────────────────────────────────────────────────────
+function generate(){
+  var wk=parseInt(document.getElementById('wksel').value);
+  DAYS.forEach(function(day){
+    if(!sel[day]) sel[day]={};
+    ['m1','m2','m3','m4','m6'].forEach(function(meal){
+      var el=document.getElementById(meal+day);
+      if(el) sel[day][meal]=el.value;
+    });
+  });
+  // protein summary
+  var sh='<div style="display:grid;gap:.45rem">';
+  var ok=true;
+  DAYS.forEach(function(day){
+    if(day==='Saturday') return;
+    var g=calcP(day,wk);
+    var c=pcol(g);
+    var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
+    if(g<PT) ok=false;
+    var pct=Math.min(100,Math.round(g/PT*100));
+    sh+='<div style="display:flex;align-items:center;gap:.65rem">';
+    sh+='<div style="width:80px;font-size:.75rem;font-weight:500">'+day+'</div>';
+    sh+='<div style="flex:1;height:4px;background:rgba(28,43,28,.07);border-radius:100px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:100px"></div></div>';
+    sh+='<div style="font-size:.75rem;font-weight:700;color:'+c+';width:50px;text-align:right">'+em+' '+g+'g</div>';
+    sh+='</div>';
+  });
+  sh+='</div>';
+  sh+=ok
+    ?'<div style="margin-top:.65rem;font-size:.75rem;color:#4A8A2A;font-weight:600">Every day hits your 145g target!</div>'
+    :'<div style="margin-top:.65rem;font-size:.75rem;color:#B8860B">Adjust highlighted days to hit your 145g target</div>';
+  document.getElementById('psumC').innerHTML=sh;
+
+  buildCal(wk);
+  buildGroc(wk);
+  // switch to calendar
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('pg-calendar').classList.add('on');
+  document.querySelectorAll('.tab')[4].classList.add('active');
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────────────────
+function buildCal(wk){
+  var fruit=getFruit()||'fruit of your choice';
+  var h='<div style="margin-bottom:.85rem;font-size:.75rem;color:rgba(28,43,28,.5)">Week '+wk+' &middot; Fruit this week: <strong>'+fruit+'</strong></div>';
+  h+='<div class="cg">';
+  DAYS.forEach(function(d){h+='<div class="ch">'+d.slice(0,3)+'</div>';});
+  DAYS.forEach(function(day){
+    var s=sel[day]||{};
+    var din=DIN[wk][day];
+    var g=calcP(day,wk);
+    var c=pcol(g);
+    var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
+    h+='<div class="cd"><div class="cdn">'+day.slice(0,3)+'</div>';
+    if(day!=='Saturday') h+='<div class="cprot" style="color:'+c+'">'+em+' '+g+'g</div>';
+    if(s.m1) h+='<div class="cm cm1">M1: '+M1O[s.m1]+'</div>';
+    else h+='<div class="cempty">No M1</div>';
+    if(s.m2) h+='<div class="cm cm2">M2: '+s.m2+'</div>';
+    if(s.m3) h+='<div class="cm cm3">M3: '+M3O[s.m3]+'</div>';
+    else h+='<div class="cempty">No M3</div>';
+    if(s.m4) h+='<div class="cm cm4">M4: '+s.m4+'</div>';
+    if(day==='Saturday') h+='<div class="cm cm5" style="color:#C4622D">Cheat Night</div>';
+    else if(din) h+='<div class="cm cm5">'+din.n+'</div>';
+    if(s.m6) h+='<div class="cm cm6">M6: '+M6O[s.m6]+'</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById('calOut').innerHTML=h;
+}
+
+// ── GROCERY ───────────────────────────────────────────────────────────────
+function buildGroc(wk){
+  var cats={Protein:new Set(),Dairy:new Set(),Produce:new Set(),Frozen:new Set(),Pantry:new Set()};
+  var fruit=getFruit()||'fruit of your choice';
+  cats.Pantry.add('Nutricost Whey Isolate protein powder');
+  cats.Dairy.add('Lactaid milk');
+  cats.Pantry.add('Olive oil');
+  cats.Pantry.add('Garlic powder, onion powder, paprika, salt, black pepper');
+  cats.Produce.add('Fresh fruit: '+fruit);
+
+  function addG(g){
+    Object.keys(g).forEach(function(cat){
+      var c=cat.replace(/\d/,'');
+      if(cats[c]) g[cat].forEach(function(i){cats[c].add(i);});
+    });
+  }
+
+  DAYS.forEach(function(day){
+    if(day==='Saturday') return;
+    var s=sel[day]||{};
+    if(s.m1&&GROC.m1[s.m1]) addG(GROC.m1[s.m1]);
+    if(s.m1carb==='Oatmeal') cats.Pantry.add('Rolled oats');
+    if(s.m1carb==='Wheat Toast') cats.Pantry.add('Whole grain bread');
+    if(s.m2&&GROC.m2[s.m2]) addG(GROC.m2[s.m2]);
+    if(s.m3&&GROC.m3[s.m3]) addG(GROC.m3[s.m3]);
+    if((s.m3==='C'||s.m3==='D')&&s.m3prot==='Tuna') cats.Pantry.add('Canned tuna (3-4 cans)');
+    if(s.m4&&GROC.m2[s.m4]) addG(GROC.m2[s.m4]);
+  });
+
+  var dg=GROC.din[wk];
+  if(dg) Object.keys(dg).forEach(function(day){
+    addG(dg[day]);
+  });
+
+  var emoj={Protein:'&#x1F969;',Dairy:'&#x1F95B;',Produce:'&#x1F966;',Frozen:'&#x2744;&#xFE0F;',Pantry:'&#x1F3EA;'};
+  var h='';
+  ['Protein','Dairy','Produce','Frozen','Pantry'].forEach(function(cat){
+    if(!cats[cat].size) return;
+    h+='<div class="gcat"><div class="gct">'+emoj[cat]+' '+cat+'</div>';
+    cats[cat].forEach(function(item){
+      h+='<div class="gi" onclick="this.classList.toggle(\'chk\')"><div class="gcb"></div><span>'+item+'</span></div>';
+    });
+    h+='</div>';
+  });
+  document.getElementById('grocOut').innerHTML=h||'<div class="gempty">Nothing selected yet.</div>';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.onload=function(){
+  buildPlanner();
+  renderDin(1);
+  renderRec('');
+  renderSwap();
+};
+</script>
+</body>
+</html>
