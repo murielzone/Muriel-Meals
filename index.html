@@ -558,7 +558,7 @@ select:focus,.dms:focus{outline:none;border-color:var(--sage)}
   <div class="rule"><div class="rck">&#x2713;</div>Wednesday meals make enough for Thursday</div>
   <div class="rule"><div class="rck">&#x2713;</div>Fish is single cook night only &mdash; never a two day meal</div>
   <div class="rule"><div class="rck">&#x2713;</div>Substitute like for like &mdash; protein for protein, carb for carb, vegetable for vegetable</div>
-  <div class="rule"><div class="rck">&#x2713;</div>Daily protein target: 145g</div>
+  <div class="rule"><div class="rck">&#x2713;</div>Daily protein target: 130-145g</div>
   <div class="rule"><div class="rck">&#x2713;</div>After 14 days &mdash; Saturday cheat meal is last meal only, not a cheat day</div>
   <div class="rule"><div class="rck">&#x2713;</div>Keep pre-made blackening seasoning on hand for Week 2 Tuesday</div>
   <div class="rule"><div class="rck">&#x2713;</div>Whole grain flour tortillas for enchiladas &mdash; Mission brand at Walmart</div>
@@ -568,7 +568,7 @@ select:focus,.dms:focus{outline:none;border-color:var(--sage)}
 
 <script>
 var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-var PT=145;
+var PT_MIN=130; var PT_MAX=145; var PT=PT_MIN;
 var M1O={A:'Scrambled Eggs',B:'Turkey Sausage',C:'Yogurt & Granola Bowl',D:'Overnight Oats',E:'Weekend French Toast'};
 var CARBS=['Oatmeal','Wheat Toast','Fruit'];
 var M2P=['Nut Butter / Nuts','String Cheese','Avocado','Greek Yogurt'];
@@ -1277,8 +1277,8 @@ function updateAllProt(){DAYS.forEach(function(d){updProt(d);});}
 function clearAll(){sel={};buildPlanner();}
 
 function pcol(g){
-  if(g>=PT) return '#4A8A2A';
-  if(g>=116) return '#B8860B';
+  if(g>=PT_MIN) return '#4A8A2A';
+  if(g>=104) return '#B8860B';
   return '#C4622D';
 }
 function calcP(day,wk){
@@ -1298,9 +1298,9 @@ function updProt(day){
   if(!pb) return;
   var g=calcP(day,wk);
   var c=pcol(g);
-  var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
-  pb.innerHTML=em+' <span style="color:'+c+';font-weight:700">'+g+'g</span> <span style="color:rgba(28,43,28,.3);font-size:.65rem">/ '+PT+'g</span>';
-  if(pf){var pct=Math.min(100,Math.round(g/PT*100));pf.style.width=pct+'%';pf.style.background=c;}
+  var em=g>=PT_MIN?'&#x1F7E2;':g>=104?'&#x1F7E1;':'&#x1F534;';
+  pb.innerHTML=em+' <span style="color:'+c+';font-weight:700">'+g+'g</span> <span style="color:rgba(28,43,28,.3);font-size:.65rem">/ '+PT_MIN+'-'+PT_MAX+'g</span>';
+  if(pf){var pct=Math.min(100,Math.round(g/PT_MIN*100));pf.style.width=pct+'%';pf.style.background=c;}
 }
 
 // ── GENERATE ──────────────────────────────────────────────────────────────
@@ -1320,9 +1320,9 @@ function generate(){
     if(day==='Saturday') return;
     var g=calcP(day,wk);
     var c=pcol(g);
-    var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
-    if(g<PT) ok=false;
-    var pct=Math.min(100,Math.round(g/PT*100));
+    var em=g>=PT_MIN?'&#x1F7E2;':g>=104?'&#x1F7E1;':'&#x1F534;';
+    if(g<PT_MIN) ok=false;
+    var pct=Math.min(100,Math.round(g/PT_MIN*100));
     sh+='<div style="display:flex;align-items:center;gap:.65rem">';
     sh+='<div style="width:80px;font-size:.75rem;font-weight:500">'+day+'</div>';
     sh+='<div style="flex:1;height:4px;background:rgba(28,43,28,.07);border-radius:100px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:100px"></div></div>';
@@ -1355,7 +1355,7 @@ function buildCal(wk){
     var din=DIN[wk][day];
     var g=calcP(day,wk);
     var c=pcol(g);
-    var em=g>=PT?'&#x1F7E2;':g>=116?'&#x1F7E1;':'&#x1F534;';
+    var em=g>=PT_MIN?'&#x1F7E2;':g>=104?'&#x1F7E1;':'&#x1F534;';
     h+='<div class="cd"><div class="cdn">'+day.slice(0,3)+'</div>';
     if(day!=='Saturday') h+='<div class="cprot" style="color:'+c+'">'+em+' '+g+'g</div>';
     if(s.m1) h+='<div class="cm cm1">M1: '+M1O[s.m1]+'</div>';
